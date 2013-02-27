@@ -1,0 +1,7 @@
+{
+  "name":"RxJS-Touch",
+  "version":"0.0.1",
+  "dependencies": {
+    "coffee-script": "*"
+  }
+}
