@@ -1,6 +1,4 @@
 *.sublime-project
 *.sublime-workspace
-*.js
-*.html
 node_modules
 .DS_STORE
