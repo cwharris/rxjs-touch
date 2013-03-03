@@ -1,7 +1,24 @@
 {
-  "name":"RxJS-Touch",
-  "version":"0.0.1",
+  "name": "RxJS-Touch",
+  "version": "0.0.1",
+  "author": "Christopher Harris <xixonia@gmail.com>",
+  "description": "Unified, cross-browser, cross-device, pointer/touch/mouse events as observable sequences.",
+  "contributors": [
+    {
+      "name": "Christopher Harris",
+      "email": "xixonia@gmail.com"
+    },
+    {
+      "name": "Paul Taylor",
+      "email": "paul.e.taylor@me.com"
+    }
+  ],
+  "main": "rx.touch.js",
   "dependencies": {
+    "rx": ">=2.0.2",
+    "rxjs-jquery": ">=0.0.1"
+  },
+  "devDependencies": {
     "coffee-script": "*"
   }
 }
