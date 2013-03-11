@@ -3,14 +3,22 @@ do ($ = jQuery) ->
   Rx.Observable.prototype.normalizeTouch = (preventDefault) ->
     this
       .doAction((e) -> e.preventDefault() if preventDefault)
-      .selectMany((e) ->
+      .selectMany (e) ->
         Rx.Observable.fromArray(e.originalEvent.changedTouches)
-          .select (touch) -> touch
-      )
+          .select (touch) ->
+            preventDefault: e.preventDefault.bind(e)
+            identifier: touch.identifier
+            pageX: touch.pageX
+            pageY: touch.pageY
 
   Rx.Observable.prototype.normalizeMouse = (preventDefault) ->
     this
       .doAction((e) -> e.preventDefault() if preventDefault)
+      .select (mouse) ->
+        preventDefault: mouse.preventDefault.bind(mouse)
+        identifier: 0
+        pageX: mouse.pageX
+        pageY: mouse.pageY
 
   $.fn.upAsObservable = (preventDefault = true) ->
     target = $ @
@@ -36,15 +44,21 @@ do ($ = jQuery) ->
     up = context.upAsObservable(preventDefault)
 
     down = target.downAsObservable(preventDefault)
- 
+
     move = Rx.Observable.amb(
       context.onAsObservable('touchmove').normalizeTouch(preventDefault)
-      down.selectMany ->
-        context.onAsObservable('mousemove').normalizeMouse(preventDefault)
-          .takeUntil(up)
-    )
+      context.onAsObservable('mousemove').normalizeMouse(preventDefault)
+      )
 
-    move.groupByUntil(
+    moves = down.selectMany (e) ->
+      move
+        .where((b) -> b.identifier is e.identifier)
+        .takeUntil(
+          up.where((b) -> b.identifier is e.identifier)
+        )
+        .startWith(e)
+
+    moves.groupByUntil(
         (e) -> e.identifier
         (e) -> e
         (group) -> up.where (e) -> e.identifier is group.key
